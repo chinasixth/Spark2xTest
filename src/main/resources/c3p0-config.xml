@@ -1,0 +1,27 @@
+<c3p0-config>
+    <named-config name="qlcloud_c3p0">
+        <!-- 数据库的连接字符串 -->
+        <property name="driverClass">
+            com.mysql.jdbc.Driver
+        </property>
+        <property name="jdbcUrl">
+            jdbc:mysql://localhost:3306/test
+        </property>
+        <property name="user">root</property>
+        <property name="password">123456</property>
+
+        <!-- 当连接耗尽时，一次获取的连接个数 -->
+        <property name="acquireIncrement">5</property>
+        <!-- 初始连接个数 -->
+        <property name="initialPoolSize">10</property>
+        <!-- 最小连接个数 -->
+        <property name="minPoolSize">5</property>
+        <!-- 最大连接个数 -->
+        <property name="maxPoolSize">15</property>
+
+        <!-- 连接池中最多管理的Statement -->
+        <property name="maxStatements">10</property>
+        <!-- 每个连接管理最多的Statement -->
+        <property name="maxStatementsPerConnection">3</property>
+    </named-config>
+</c3p0-config>

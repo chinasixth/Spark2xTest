@@ -1,3 +1,13 @@
-{"name": "tuoer"}
-{"name": "langer", "age": 20}
-{"name": "xier", "age": 18}
+[
+  {
+    "name": "tuoer"
+  },
+  {
+    "name": "langer",
+    "age": 20
+  },
+  {
+    "name": "xier",
+    "age": 18
+  }
+]

@@ -1,6 +1,6 @@
 package com.qinglianyun.spark.sparksql
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
   * @ Author ：liuhao
@@ -12,7 +12,7 @@ import org.apache.spark.sql.SparkSession
   * 注意：1.对于json格式的文件，一个json串必须在一行，否则报错
   *      2.读取json格式的文件需要指定schema，否则报错；指定schema的时候，名字应该和schema中的一致
   *      3.使用sql查询已经注册的表时，如果使用的是select *，那么结果将会按照列名的字典顺序排序
-  *      4.操作相应的源，可以写上format()，比如format("json")。value：console、json、kafka、csv
+  *      4.操作相应的源，可以写上format()，比如format("json")。value：console、json、kafka、csv、orc、jdbc、text、libsvm、parquet
   *      5.如果写上了format，后面可以直接使用load方法读取数据；如果没有写，可以直接使用已经封装好的方法，比如.json
   *
   *
@@ -74,7 +74,18 @@ object DataFrameTest {
     //    val csvSelect = spark.sql("select * from global_temp.people")
     //    csvSelect.show()
 
+    //    // TODO 读取parquet文件
+    //    val parquetDF: DataFrame = spark.read.parquet("src/main/data/users.parquet")
+    //    parquetDF.show()
+    //    // 保存，生成的时文件夹，要保证此文件夹不存在
+    //    //    parquetDF.select("name", "favorite_color").write.save("namesAndFavColors.parquet")
+    //    // 当读进来的格式和write的格式不一样时，可以手动指定输出的格式。
+    //    parquetDF.select("name", "favorite_color").write.format("parquet").save("namesAndFavColors.parquet")
 
+    val jsonDF: DataFrame = spark.read.format("json")
+      .option("multiLine", "true")
+      .load("src/main/data/people.json")
+    jsonDF.show()
 
 
     spark.close()

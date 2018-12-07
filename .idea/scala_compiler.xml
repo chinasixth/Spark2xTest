@@ -3,8 +3,7 @@
   <component name="ScalaCompilerConfiguration">
     <profile name="Maven 1" modules="Spark2xTest">
       <parameters>
-        <parameter value="-dependencyfile" />
-        <parameter value="C:\IdeaProjects\Spark2xTest\target/.scala_dependencies" />
+        <parameter value="-target:jvm-1.8" />
       </parameters>
     </profile>
   </component>

@@ -29,14 +29,15 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_2.11</artifactId>
-            <version>2.3.14</version>
+            <version>2.5.11</version>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-remote -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-remote_2.11</artifactId>
-            <version>2.3.14</version>
+            <version>2.5.11</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
@@ -58,7 +59,7 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming_2.11</artifactId>
             <version>2.4.0</version>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
 
 
@@ -67,9 +68,9 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-mllib_2.11</artifactId>
             <version>2.4.0</version>
-            <scope>runtime</scope>
+            <!--在编写代码时，需要注释掉下面这一行，否则无法引用jar包中的各种类-->
+            <!--<scope>runtime</scope>-->
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-streaming-kafka-0-10 -->
         <dependency>
@@ -114,6 +115,27 @@
             <type>pom</type>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/c3p0/c3p0 -->
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -154,28 +176,44 @@
 
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
+        <!--<testSourceDirectory>src/test/scala</testSourceDirectory>-->
         <plugins>
             <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.2</version>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
-                        <configuration>
-                            <args>
-                                <arg>-make:transitive</arg>
-                                <arg>-dependencyfile</arg>
-                                <arg>${project.build.directory}/.scala_dependencies</arg>
-                            </args>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <scalaVersion>2.11.12</scalaVersion>
+                    <args>
+                        <arg>-target:jvm-1.8</arg>
+                    </args>
+                </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <buildcommands>
+                        <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
+                    </buildcommands>
+                    <additionalProjectnatures>
+                        <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
+                    </additionalProjectnatures>
+                    <classpathContainers>
+                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                        <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
+                    </classpathContainers>
+                </configuration>
+            </plugin>
+            <!--可以将所有的依赖打进jar包中，避免classNotFound-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -209,4 +247,74 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <configuration>
+                    <scalaVersion>2.11.12</scalaVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
+    <!--<build>-->
+    <!--<sourceDirectory>src/main/scala</sourceDirectory>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>net.alchim31.maven</groupId>-->
+    <!--<artifactId>scala-maven-plugin</artifactId>-->
+    <!--<version>3.2.2</version>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<goals>-->
+    <!--<goal>compile</goal>-->
+    <!--<goal>testCompile</goal>-->
+    <!--</goals>-->
+    <!--<configuration>-->
+    <!--<args>-->
+    <!--<arg>-make:transitive</arg>-->
+    <!--<arg>-dependencyfile</arg>-->
+    <!--<arg>${project.build.directory}/.scala_dependencies</arg>-->
+    <!--</args>-->
+    <!--</configuration>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-shade-plugin</artifactId>-->
+    <!--<version>2.4.3</version>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--<goal>shade</goal>-->
+    <!--</goals>-->
+    <!--<configuration>-->
+    <!--<filters>-->
+    <!--<filter>-->
+    <!--<artifact>*:*</artifact>-->
+    <!--<excludes>-->
+    <!--<exclude>META-INF/*.SF</exclude>-->
+    <!--<exclude>META-INF/*.DSA</exclude>-->
+    <!--<exclude>META-INF/*.RSA</exclude>-->
+    <!--</excludes>-->
+    <!--</filter>-->
+    <!--</filters>-->
+    <!--<transformers>-->
+    <!--<transformer-->
+    <!--implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+    <!--<mainClass></mainClass>-->
+    <!--</transformer>-->
+    <!--</transformers>-->
+    <!--</configuration>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
 </project>
