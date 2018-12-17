@@ -1,7 +1,10 @@
 package com.qinglianyun.spark.sparkmllib
 
+import org.apache.spark.ml.linalg
 import org.apache.spark.ml.linalg.{Matrix, Vectors}
 import org.apache.spark.ml.stat.Correlation
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.types.{DataTypes, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 
@@ -35,6 +38,8 @@ object CorrelationTest {
     import spark.implicits._
     val df: DataFrame = data.map(Tuple1.apply).toDF("features")
     df.select("features").show()
+    val tuples: Seq[Tuple1[linalg.Vector]] = data.map(Tuple1.apply)
+    println(s"tuples: \n${tuples}")
 
     // 第三个参数是指计算相似度的方法：pearson（默认）  spearman
     val Row(coeff1: Matrix) = Correlation.corr(df, "features").head()
@@ -43,6 +48,24 @@ object CorrelationTest {
 
     val Row(coeff2: Matrix) = Correlation.corr(df, "features", "spearman").head()
     println(s"Spearman correlation matrix:\n ${coeff2}")
+
+    // 测试鸢尾花数据
+    val originalData: RDD[Array[String]] = spark.sparkContext.textFile("src/main/data/iris.data").map(_.split(","))
+    val rowRDD: RDD[Row] = originalData.map(x => Row(x(0).toDouble, x(1).toDouble, x(2).toDouble, x(3).toDouble, x(4)))
+    val schema: StructType = StructType(
+      Array(
+        new StructField("el", DataTypes.DoubleType, false),
+        new StructField("ew", DataTypes.DoubleType, false),
+        new StructField("fl", DataTypes.DoubleType, false),
+        new StructField("fw", DataTypes.DoubleType, false),
+        new StructField("kind", DataTypes.StringType, false)
+      )
+    )
+    val frame: DataFrame = spark.createDataFrame(rowRDD, schema)
+    frame.show()
+
+
+
 
     spark.stop()
   }
