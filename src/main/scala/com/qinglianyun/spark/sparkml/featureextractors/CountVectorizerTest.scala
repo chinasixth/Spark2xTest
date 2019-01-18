@@ -1,4 +1,4 @@
-package com.qinglianyun.spark.sparkml
+package com.qinglianyun.spark.sparkml.featureextractors
 
 import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -8,6 +8,14 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
   * @ Company: qinglianyun
   * @ Date   ：Created in 11:39 2018/12/13
   * @ CountVectorizer和CountVectorizerModel旨在通过计数来将一个文档上转化为向量。
+  * 和TF-IDF、Word2Vec类似，都是将文档向量化的算法。
+  *
+  * 词袋法：
+  * 不考虑词语出现的顺序，每个出现过的词汇单独作为一列特征
+  * 这些不重复的词汇集合为词表
+  * 每一个文本都可以在很长的词表上统计出一个很多列的特征向量
+  * 如果每个文本都出现的词汇，一般被标记为 停用词 不计入特征向量
+  *
   */
 object CountVectorizerTest {
   def main(args: Array[String]): Unit = {
