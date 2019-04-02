@@ -11,7 +11,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   * @ Author ：liuhao
   * @ Company: qinglianyun
   * @ Date   ：Created in 16:28 2018/12/3
-  * @ Desc   : 在集群上运行Spark Steaming，实现Word Count功能
+  * @ Desc   : 在集群上运行Spark Streaming，实现Word Count功能
   */
 object WordCountCluster {
   def main(args: Array[String]): Unit = {

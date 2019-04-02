@@ -23,6 +23,7 @@ object WordCount {
 
 //    println(count.collect.toBuffer)
     count.saveAsTextFile(args(1))
+
     sc.stop()
   }
 

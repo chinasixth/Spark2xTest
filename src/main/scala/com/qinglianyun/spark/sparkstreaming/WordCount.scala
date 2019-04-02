@@ -33,13 +33,13 @@ object WordCount {
     )
 
     // 可以同时指定多个topic，使用","分割
-    val topics = Array("group_test", "test")
+    val topics = Array("mytopic", "test")
 
     //     手动指定offset的起始位置
     val fromOffsets = Map[TopicPartition, Long](
       new TopicPartition("test", 0) -> 0L,
       //      new TopicPartition("test", 1) -> 0L  // 手动设置消费的起始位置，需要正确指定TopicPartition，
-      new TopicPartition("group_test", 0) -> 1L
+      new TopicPartition("mytopic", 0) -> 1L
     )
 
     val stream: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream(

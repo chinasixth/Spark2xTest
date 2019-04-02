@@ -45,6 +45,8 @@ object JDBCSourceTest {
         .jdbc("jdbc:mysql://localhost:3306", "test.p", connectProperties)
     jdbcDF3.show()
 
+    jdbcDF3.write.save()
+
     spark.close()
   }
 }
