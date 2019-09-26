@@ -46,7 +46,7 @@ object WordCountFlume2Kafka {
       ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> (false: java.lang.Boolean)
     )
 
-    // 5.如果有指定topic的offset需求，可以手动指定offset
+    // 5.如果有指定topic的offset需求，可以手动指定offset
 
     // 6.创建direct stream
     val stream: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream[String, String](

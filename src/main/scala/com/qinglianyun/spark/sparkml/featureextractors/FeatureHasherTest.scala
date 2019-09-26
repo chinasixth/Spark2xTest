@@ -14,7 +14,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
   *
   *
   *
-  * */
+  **/
 object FeatureHasherTest {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()

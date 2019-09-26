@@ -15,7 +15,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
   *
   * 将字符串的输入数组转换为n克数组的功能转换器。忽略输入数组中的空值。
   * 它返回一个n克数组，其中每个n克由一个空格分隔的单词字符串表示。
-  * 当输入为空时，返回一个空数组。当输入数组长度小于n(每n克元素的数量)时，不返回n克。
+  * 当输入为空时，返回一个空数组。当输入数组长度小于n(每n克元素的数量)时，不返回n gram。
   *
   */
 object NGramTest {
@@ -36,11 +36,18 @@ object NGramTest {
     val nGram: NGram = new NGram()
       .setInputCol("sentence")
       .setOutputCol("ngrams")
-      .setN(6) // Default: 2。如果设置的特别长，那么将什么都不显示
+      .setN(2) // Default: 2。如果设置的特别长，那么将什么都不显示
 
     val nGrammed: DataFrame = nGram.transform(dataset)
 
     nGrammed.show(false)
+    // +---+------------------------------------------+--------------------------------------------------------------+
+    // |id |sentence                                  |ngrams                                                        |
+    // +---+------------------------------------------+--------------------------------------------------------------+
+    // |0  |[Hi, I, heard, about, Spark]              |[]                                                            |
+    // |1  |[I, wish, Java, could, use, case, classes]|[I wish Java could use case, wish Java could use case classes]|
+    // |2  |[Logistic, regression, models, are, neat] |[]                                                            |
+    // +---+------------------------------------------+--------------------------------------------------------------+
 
 
     spark.close()
