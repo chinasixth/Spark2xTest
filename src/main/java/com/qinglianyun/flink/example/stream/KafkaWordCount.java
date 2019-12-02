@@ -72,14 +72,14 @@ public class KafkaWordCount {
         DataStreamSource<String> stream = env.addSource(new FlinkKafkaConsumer010<>("test", new SimpleStringSchema(), properties));
 
         /*
-        * flink 有两种状态: 被key化的状态和算子状态
-        * 被key化的状态和算子又有两种形式：托管状态和原始状态
-        * 托管状态是由flink运行时控制的数据结构表示
-        * 原始状态是算子保存在自己的数据结构中的状态
-        *
-        * 对于non-keyed 原始数据流，不会被切分成多个逻辑数据流，并且所有的窗口逻辑将由单个的task执行
-        * 一般先对流进行逻辑分区，然后定义一个window assigner
-        * */
+         * flink 有两种状态: 被key化的状态和算子状态
+         * 被key化的状态和算子又有两种形式：托管状态和原始状态
+         * 托管状态是由flink运行时控制的数据结构表示
+         * 原始状态是算子保存在自己的数据结构中的状态
+         *
+         * 对于non-keyed 原始数据流，不会被切分成多个逻辑数据流，并且所有的窗口逻辑将由单个的task执行
+         * 一般先对流进行逻辑分区，然后定义一个window assigner
+         * */
         SingleOutputStreamOperator<Tuple2<String, Integer>> result = stream.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String value, Collector<Tuple2<String, Integer>> out) throws Exception {

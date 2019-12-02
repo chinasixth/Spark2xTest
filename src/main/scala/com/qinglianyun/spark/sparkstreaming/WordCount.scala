@@ -3,10 +3,11 @@ package com.qinglianyun.spark.sparkstreaming
 import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord}
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.spark.{SparkConf, TaskContext}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.{SparkConf, TaskContext}
 
 
 /**
@@ -17,13 +18,13 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   */
 object WordCount {
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf()
+    val conf: SparkConf = new SparkConf()
       .setAppName("StreamingWordCount")
       .setMaster("local[*]")
 
     val ssc = new StreamingContext(conf, Seconds(5))
 
-    val kafkaParams = Map[String, Object](
+    val kafkaParams: Map[String, Object] = Map[String, Object](
       ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "node01:9092,node02:9092,node03:9092",
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
@@ -36,7 +37,7 @@ object WordCount {
     val topics = Array("mytopic", "test")
 
     //     手动指定offset的起始位置
-    val fromOffsets = Map[TopicPartition, Long](
+    val fromOffsets: Map[TopicPartition, Long] = Map[TopicPartition, Long](
       new TopicPartition("test", 0) -> 0L,
       //      new TopicPartition("test", 1) -> 0L  // 手动设置消费的起始位置，需要正确指定TopicPartition，
       new TopicPartition("mytopic", 0) -> 1L
@@ -51,24 +52,24 @@ object WordCount {
     )
 
     // 获取并存储offset到kafka
-    stream.foreachRDD(rdd => {
+    stream.foreachRDD((rdd: RDD[ConsumerRecord[String, String]]) => {
       val offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
-      rdd.foreachPartition(iter => {
+      rdd.foreachPartition((iter: Iterator[ConsumerRecord[String, String]]) => {
         val o: OffsetRange = offsetRanges(TaskContext.get().partitionId())
         println(s"${o.topic}  ${o.partition}  ${o.fromOffset}  ${o.untilOffset}")
       })
       stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
     })
 
-    val kvDS: DStream[(String, String)] = stream.map(record => (record.key(), record.value()))
+    val kvDS: DStream[(String, String)] = stream.map((record: ConsumerRecord[String, String]) => (record.key(), record.value()))
 
-    val linesDS: DStream[String] = kvDS.map(_._2)
+    val linesDS: DStream[String] = kvDS.map((_: (String, String))._2)
 
-    val words: DStream[String] = linesDS.flatMap(_.split(" "))
+    val words: DStream[String] = linesDS.flatMap((_: String).split(" "))
 
-    val pairs: DStream[(String, Int)] = words.map((_, 1))
+    val pairs: DStream[(String, Int)] = words.map((_: String, 1))
 
-    val result: DStream[(String, Int)] = pairs.reduceByKey(_ + _)
+    val result: DStream[(String, Int)] = pairs.reduceByKey((_: Int) + (_: Int))
 
     result.print()
 
