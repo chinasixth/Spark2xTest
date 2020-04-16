@@ -26,11 +26,11 @@ object StructuredKafkaWordCount {
     }
 
     val Array(bootstrapServers, subscribeType, topics, _*) = args
-    val checkpointLocation =
+    val checkpointLocation: String =
       if (args.length > 3) args(3) else "/tmp/temporary-" + UUID.randomUUID.toString
 
 
-    val spark = SparkSession
+    val spark: SparkSession = SparkSession
       .builder()
       .appName("StructuredKafkaWordCount")
       .master("local[*]")
@@ -79,7 +79,7 @@ object StructuredKafkaWordCount {
     val words: Dataset[(String, Int, Long, Timestamp, Int, String, String)] =
       df.flatMap { row: (String, Int, Long, Timestamp, Int, String, String) =>
         row._7.split(" ")
-          .map((row._1, row._2, row._3, row._4, row._5, row._6, _))
+          .map((row._1, row._2, row._3, row._4, row._5, row._6, _: String))
       }
 
 //    words.groupBy($"topic", $"partition", $"offset", $"timestamp", $"timestampType", $"key")

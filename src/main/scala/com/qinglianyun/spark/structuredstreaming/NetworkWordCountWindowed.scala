@@ -2,7 +2,7 @@ package com.qinglianyun.spark.structuredstreaming
 
 import java.sql.Timestamp
 
-import com.qinglianyun.common.SparkConfConfig
+import com.qinglianyun.common.SparkConsts
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.streaming.StreamingQuery
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
@@ -25,9 +25,9 @@ object NetworkWordCountWindowed {
     }
 
     val host = args(0)
-    val port = args(1).toInt
-    val windowSize = args(2).toInt
-    val slideSize = if (args.length == 3) windowSize else args(3).toInt
+    val port: Int = args(1).toInt
+    val windowSize: Int = args(2).toInt
+    val slideSize: Int = if (args.length == 3) windowSize else args(3).toInt
     if (slideSize > windowSize) {
       System.err.println("<slide duration> must be less than or equal to <window duration>")
     }
@@ -35,10 +35,10 @@ object NetworkWordCountWindowed {
     val slideDuration = s"$slideSize seconds"
 
 
-    val spark = SparkSession.builder()
+    val spark: SparkSession = SparkSession.builder()
       .appName("NetworkWordCountWindowed")
       .master("local[*]")
-      .config(SparkConfConfig.SPARK_SQL_SHUFFLE_PARTITIONS, "10")
+      .config(SparkConsts.SPARK_SQL_SHUFFLE_PARTITIONS, "10")
       .getOrCreate()
 
     import spark.implicits._
@@ -60,7 +60,7 @@ object NetworkWordCountWindowed {
       ).toDF("word", "timestamp")
 
     /*
-    * 设置水印时间，水印线就计算方式：上一批次的 max eventTime - watermark
+    * 设置水印时间，水印线计算方式：上一批次的 max eventTime - watermark
     * */
     val windowedCounts: Dataset[Row] = words
       .withWatermark("timestamp", windowDuration)

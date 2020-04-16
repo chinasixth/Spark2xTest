@@ -23,8 +23,7 @@ public class HBaseAccess {
 
     public static void main(String[] args) {
         init();
-
-
+        listTables();
     }
 
     private static void scanTable(String tableName) {
@@ -137,8 +136,6 @@ public class HBaseAccess {
             admin = connection.getAdmin();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            close();
         }
     }
 

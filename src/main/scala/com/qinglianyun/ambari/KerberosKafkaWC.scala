@@ -1,6 +1,6 @@
 package com.qinglianyun.ambari
 
-import com.qinglianyun.common.SparkConfConfig
+import com.qinglianyun.common.SparkConsts
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord}
 import org.apache.kafka.common.config.SaslConfigs
@@ -39,7 +39,7 @@ object KerberosKafkaWC {
 
     val conf: SparkConf = new SparkConf()
       .setAppName("KerberosKafkaWC")
-      .set(SparkConfConfig.SPARK_SERIALIZER, "org.apache.spark.serializer.KryoSerializer")
+      .set(SparkConsts.SPARK_SERIALIZER, "org.apache.spark.serializer.KryoSerializer")
       .set("spark.driver.extraJavaOptions", s"-Djava.security.auth.login.config=$kafkaKerberos")
       .set("spark.executor.extraJavaOptions", s"-Djava.security.auth.login.config=$kafkaKerberos")
 
